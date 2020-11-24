@@ -1,6 +1,7 @@
 #ifndef __DL_LN3X__H__
 #define __DL_LN3X__H__
 #include "uart.h"
+#include <stdarg.h>
 #include <sys/types.h>
 
 #define DEFAULT_PACKET_LEN      4
@@ -81,6 +82,14 @@ enum dl_ln3x_set_info_ret_code
         BUAD_RET = 0x24
 };
 
+enum dl_ln3x_set_info_err
+{
+        ADDR_RET_ERR = 0x1000,
+        NID_RET_ERR,
+        CHN_RET_ERR,
+        BUAD_RET_ERR
+};
+
 typedef enum dl_ln3x_cmd
 {
         GET_ADDR,
@@ -88,6 +97,18 @@ typedef enum dl_ln3x_cmd
         GET_CHN,
         GET_BUAD
 }dl_ln3x_cmd_t;
+
+
+
+enum dl_ln3x_packet_pos
+{
+        POS_HEADER,
+        POS_LENTH,
+        POS_SRC_PORT,
+        POS_DEST_PORT,
+        POS_ADDR,
+        POS_DATA = 6
+};
 
 static const u_int8_t GET_INFO_CMD[10][8] = 
 {
@@ -108,6 +129,7 @@ typedef struct dl_ln3x_property
         u_int16_t dev_addr;
         u_int8_t channel;
         u_int16_t net_ID;
+        u_int32_t buadrate;
         u_int8_t com_port;       
 }dl_ln3x_property;
 
@@ -127,7 +149,7 @@ typedef struct dl_ln3x_packet
         u_int16_t addr;
         u_int8_t *data;
         u_int8_t tail;
-}dl_ln3x_packet;
+}__attribute__ ((packed)) dl_ln3x_packet;
 
 dl_ln3x_t init_dl_ln3x (dl_ln3x ** dev);
 
@@ -139,6 +161,8 @@ dl_ln3x_t check_DLLN3x_data_len (const u_int8_t *buf);
 
 dl_ln3x_t dl_ln3x_read_data (dl_ln3x * dev, dl_ln3x_packet *packet);
 
-dl_ln3x_t dl_ln3x_extract_data (dl_ln3x_cmd_t cmd, char *VARG, ...);
+dl_ln3x_t dl_ln3x_extract_data (dl_ln3x_cmd_t cmd, dl_ln3x * dev, dl_ln3x_packet * packet);
+
+void show_dl_ln3x_property (dl_ln3x_property * property);
 
 #endif  //!__DL_LN3X__H__
