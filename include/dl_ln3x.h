@@ -2,6 +2,7 @@
 #define __DL_LN3X__H__
 #include "uart.h"
 #include <stdarg.h>
+#include <errno.h>
 #include <sys/types.h>
 
 #define DEFAULT_PACKET_LEN      4
@@ -34,7 +35,7 @@
 #define TTL_PIN5_PORT           0x45
 #define LN3X_PACKET_HEADER      0xFE
 #define LN3X_PACKET_TAIL        0xFF
-
+#define LN3X_VAR_DATA_LEN(val) (val - 4)
 typedef int dl_ln3x_t;
 typedef unsigned char dlboolean;
 
@@ -163,6 +164,13 @@ dl_ln3x_t dl_ln3x_read_data (dl_ln3x * dev, dl_ln3x_packet *packet);
 
 dl_ln3x_t dl_ln3x_extract_data (dl_ln3x_cmd_t cmd, dl_ln3x * dev, dl_ln3x_packet * packet);
 
+dl_ln3x_t dl_ln3x_set_com (dl_ln3x *dev, u_int8_t com, dlboolean inside);
+
+dl_ln3x_t dl_ln3x_send_data (dl_ln3x *dev, u_int8_t *data, u_int8_t len, u_int8_t dest_port, u_int16_t dest_addr);
+
+dl_ln3x_t dl_ln3x_show_packet (dl_ln3x_packet *packet);
 void show_dl_ln3x_property (dl_ln3x_property * property);
+
+
 
 #endif  //!__DL_LN3X__H__

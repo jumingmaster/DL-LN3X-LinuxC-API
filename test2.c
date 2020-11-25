@@ -29,13 +29,13 @@ int main(int argc, const char **argv)
 	dl_ln3x_packet packet;
 	while (i < 5)
 	{
-		err = dl_ln3x_send_data (dev, val, 1, 0x90, 0xB16D);
+		err = dl_ln3x_send_data (dev, val, 1, 0x90, 0x6562);
 		if (err)
 			error_print (err);
 		dl_ln3x_read_data (dev, &packet);
 		show_serial_data_hex (packet.data, LN3X_VAR_DATA_LEN (packet.len));
 		sleep (5);
-		(*val)++;
+		val[0] += 2;
 		i++;
 	}
 	
